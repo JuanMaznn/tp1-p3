@@ -200,4 +200,77 @@ async function main() {
   await consigna_2_b();
 }
 
+// c)
+
+function eliminarPrimerPersonaje() {
+  try {
+    const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+    const personajes = JSON.parse(data);
+
+    const eliminado = personajes.shift();
+
+    console.log('Personaje eliminado:');
+    console.log(eliminado);
+
+    fs.writeFileSync(
+      './listaPersonajes.json',
+      JSON.stringify(personajes, null, 2)
+    );
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+eliminarPrimerPersonaje();
+
+// d)
+
+function crearArchivoReducido() {
+  try {
+    const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+    const personajes = JSON.parse(data);
+
+    //Crear nuevo array con solo id y nombre
+    const reducido = personajes.map(p => ({
+      id: p.id,
+      nombre: p.fullName
+    }));
+
+    // Guardar en nuevo archivo
+    fs.writeFileSync(
+      './personajesReducidos.json',
+      JSON.stringify(reducido, null, 2)
+    );
+
+    console.log('Archivo reducido');
+    console.log(reducido);
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+crearArchivoReducido();
+
+// e)
+
+function ordenarPersonajesDecre() {
+  try {
+    const data = fs.readFileSync('./personajesReducidos.json', 'utf-8');
+    const personajes = JSON.parse(data);
+
+    personajes.sort((a, b) => {
+      if (a.nombre < b.nombre) return 1;
+      if (a.nombre > b.nombre) return -1;
+      return 0;
+    });
+
+    console.log('Personajes ordenados de forma decreciente:');
+    console.log(personajes);
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+ordenarPersonajesDecre();
+
 main();
