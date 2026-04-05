@@ -7,7 +7,7 @@ function persistir(personajes) {
     './listaPersonajes.json',
     JSON.stringify(personajes, null, 2),
   );
-  console.log('archivo guardado');
+  console.log('Archivo guardado...');
 }
 
 // CONSIGNA 1
@@ -72,18 +72,19 @@ async function consigna_1_c() {
       console.log('Personaje agregado:', data);
       return data;
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   }
 
   const nuevoPersonaje = {
-    firstName: '',
-    lastName: '',
-    fullName: '',
-    title: '',
-    family: '',
-    image: '',
-    imageUrl: '',
+    id: 1,
+    firstName: 'Jon',
+    lastName: 'Snow',
+    fullName: 'Jon Snow',
+    title: 'King in the North',
+    family: 'Stark',
+    image: 'jon-snow.jpg',
+    imageUrl: 'https://thronesapi.com/assets/images/jon-snow.jpg',
   };
 
   await agregarPersonaje(nuevoPersonaje);
@@ -191,6 +192,81 @@ async function consigna_2_b() {
   agregarDosAlPrincipio(nuevoPersonaje3, nuevoPersonaje4);
 }
 
+// c)
+async function consigna_2_c() {
+  function eliminarPrimerPersonaje() {
+    try {
+      const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+      const personajes = JSON.parse(data);
+
+      const eliminado = personajes.shift();
+
+      console.log('Personaje eliminado:');
+      console.log(eliminado);
+
+      fs.writeFileSync(
+        './listaPersonajes.json',
+        JSON.stringify(personajes, null, 2),
+      );
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  eliminarPrimerPersonaje();
+}
+
+// d)
+
+async function consigna_2_d() {
+  function crearArchivoReducido() {
+    try {
+      const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+      const personajes = JSON.parse(data);
+
+      //Crear nuevo array con solo id y nombre
+      const reducido = personajes.map((p) => ({
+        id: p.id,
+        nombre: p.fullName,
+      }));
+
+      // Guardar en nuevo archivo
+      fs.writeFileSync(
+        './personajesReducidos.json',
+        JSON.stringify(reducido, null, 2),
+      );
+
+      console.log('Archivo reducido');
+      console.log(reducido);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  crearArchivoReducido();
+}
+
+// e)
+
+async function consigna_2_e() {
+  function ordenarPersonajesDecre() {
+    try {
+      const data = fs.readFileSync('./personajesReducidos.json', 'utf-8');
+      const personajes = JSON.parse(data);
+
+      personajes.sort((a, b) => {
+        if (a.nombre < b.nombre) return 1;
+        if (a.nombre > b.nombre) return -1;
+        return 0;
+      });
+
+      console.log('Personajes ordenados de forma decreciente:');
+      console.log(personajes);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  ordenarPersonajesDecre();
+}
+
 async function main() {
   await consigna_1_a();
   await consigna_1_b();
@@ -198,79 +274,9 @@ async function main() {
   await consigna_1_d();
   await consigna_2_a();
   await consigna_2_b();
+  await consigna_2_c();
+  await consigna_2_d();
+  await consigna_2_e();
 }
-
-// c)
-
-function eliminarPrimerPersonaje() {
-  try {
-    const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
-    const personajes = JSON.parse(data);
-
-    const eliminado = personajes.shift();
-
-    console.log('Personaje eliminado:');
-    console.log(eliminado);
-
-    fs.writeFileSync(
-      './listaPersonajes.json',
-      JSON.stringify(personajes, null, 2)
-    );
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-eliminarPrimerPersonaje();
-
-// d)
-
-function crearArchivoReducido() {
-  try {
-    const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
-    const personajes = JSON.parse(data);
-
-    //Crear nuevo array con solo id y nombre
-    const reducido = personajes.map(p => ({
-      id: p.id,
-      nombre: p.fullName
-    }));
-
-    // Guardar en nuevo archivo
-    fs.writeFileSync(
-      './personajesReducidos.json',
-      JSON.stringify(reducido, null, 2)
-    );
-
-    console.log('Archivo reducido');
-    console.log(reducido);
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-crearArchivoReducido();
-
-// e)
-
-function ordenarPersonajesDecre() {
-  try {
-    const data = fs.readFileSync('./personajesReducidos.json', 'utf-8');
-    const personajes = JSON.parse(data);
-
-    personajes.sort((a, b) => {
-      if (a.nombre < b.nombre) return 1;
-      if (a.nombre > b.nombre) return -1;
-      return 0;
-    });
-
-    console.log('Personajes ordenados de forma decreciente:');
-    console.log(personajes);
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-ordenarPersonajesDecre();
 
 main();

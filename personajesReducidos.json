@@ -1,5 +1,29 @@
 [
   {
+    "id": 55,
+    "nombre": "Lucia Gomez"
+  },
+  {
+    "id": 0,
+    "nombre": "Daenerys Targaryen"
+  },
+  {
+    "id": 1,
+    "nombre": "Samwell Tarly"
+  },
+  {
+    "id": 2,
+    "nombre": "Jon Snow"
+  },
+  {
+    "id": 3,
+    "nombre": "Arya Stark"
+  },
+  {
+    "id": 4,
+    "nombre": "Sansa Stark"
+  },
+  {
     "id": 5,
     "nombre": "Brandon Stark"
   },

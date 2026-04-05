@@ -1,15 +1,5 @@
 [
   {
-    "firstName": "Juan",
-    "lastName": "Perez",
-    "fullName": "Juan Perez",
-    "title": "Knight",
-    "family": "House Stark",
-    "image": "juan.jpg",
-    "imageUrl": "https://miimagen.com/juan.jpg",
-    "id": 54
-  },
-  {
     "firstName": "Lucia",
     "lastName": "Gomez",
     "fullName": "Lucia Gomez",
