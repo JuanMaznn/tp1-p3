@@ -1,57 +1,282 @@
-const fs = require("fs");
-console.log("iniciando busqueda...");
-const url = "https://thronesapi.com/api/v2/Characters";
+const fs = require('fs');
+console.log('iniciando busqueda...');
+const url = 'https://thronesapi.com/api/v2/Characters';
 
-async function buscarTodosPersonajes() {
-  const resp = await fetch(url);
-  if (!resp.ok) {
-    console.log(`Error: ${resp.status}`);
-  }
-  const data = await resp.json();
-  fs.appendFileSync("./listaPersonajes.json", JSON.stringify(data, null, 2));
-  console.log("Los personajes son:");
-  console.log(fs.readFileSync("./listaPersonajes.json", "utf-8"));
+function persistir(personajes) {
+  fs.writeFileSync(
+    './listaPersonajes.json',
+    JSON.stringify(personajes, null, 2),
+  );
+  console.log('Archivo guardado...');
 }
 
-//buscarTodosPersonajes();
+// CONSIGNA 1
 
-async function buscarPersonaje(id) {
-  const resp = await fetch(`${url}/${id}`);
-  if (!resp.ok) {
-    console.log(`Error: ${resp.status}`);
+// a)
+
+async function consigna_1_a() {
+  async function buscarTodosPersonajes() {
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        console.log(`Error: ${resp.status}`);
+      }
+      const data = await resp.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
   }
-  const data = await resp.json();
-  console.log(`El personaje con id ${id} es:`);
-  console.log(data);
+  const personajesGot = await buscarTodosPersonajes();
+  console.log('Los personajes son:');
+  console.log(personajesGot);
 }
 
-//buscarPersonaje(1);
-
-const nuevoPersonaje = {
-  firstName: "",
-  lastName: "",
-  fullName: "",
-  title: "",
-  family: "",
-  image: "",
-  imageUrl: "",
-};
-
-async function agregarPersonaje() {
-  const resp = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(nuevoPersonaje),
-  });
-
-  if (resp.ok) {
-    const data = await resp.json();
-    console.log("Personaje agregado:", data);
-  } else {
-    console.log(`Error: ${resp.status}, el servidor no permite POST.`);
+// b)
+async function consigna_1_b() {
+  async function buscarPersonaje(id) {
+    try {
+      const resp = await fetch(`${url}/${id}`);
+      if (!resp.ok) {
+        console.log(`Error: ${resp.status}`);
+      }
+      const data = await resp.json();
+      console.log(`El personaje con id ${id} es:`);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
+  await buscarPersonaje(1);
 }
 
-agregarPersonaje();
+// c)
+async function consigna_1_c() {
+  async function agregarPersonaje(personaje) {
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(personaje),
+      });
+
+      if (!resp.ok) {
+        throw new Error(
+          `Error ${resp.status}: la API no permitió crear el personaje`,
+        );
+      }
+
+      const data = await resp.json();
+      console.log('Personaje agregado:', data);
+      return data;
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  const nuevoPersonaje = {
+    id: 1,
+    firstName: 'Jon',
+    lastName: 'Snow',
+    fullName: 'Jon Snow',
+    title: 'King in the North',
+    family: 'Stark',
+    image: 'jon-snow.jpg',
+    imageUrl: 'https://thronesapi.com/assets/images/jon-snow.jpg',
+  };
+
+  await agregarPersonaje(nuevoPersonaje);
+}
+
+// d)
+
+async function consigna_1_d() {
+  async function persistirConsulta() {
+    try {
+      async function buscarTodosPersonajes() {
+        const resp = await fetch(url);
+        if (!resp.ok) {
+          console.log(`Error: ${resp.status}`);
+        }
+        const data = await resp.json();
+        return data;
+      }
+      const personajesGOT = await buscarTodosPersonajes();
+      persistir(personajesGOT);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  await persistirConsulta();
+}
+
+//CONSIGNA 2
+
+// a)
+
+async function consigna_2_a() {
+  const nuevoPersonaje2 = {
+    firstName: 'Lucas',
+    lastName: 'González',
+    fullName: 'Lucas González',
+    title: 'Guerrero del Sur',
+    family: 'Casa del Plata',
+    image: 'lucas.jpg',
+    imageUrl: 'https://example.com/lucas.jpg',
+  };
+  function agregarPersonajeAlFinal() {
+    try {
+      const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+      const personajesGOT = JSON.parse(data);
+
+      const ultimoPersonaje = personajesGOT[personajesGOT.length - 1];
+      const ultimoId = ultimoPersonaje.id;
+
+      nuevoPersonaje2.id = ultimoId + 1;
+
+      personajesGOT.push(nuevoPersonaje2);
+
+      console.log('Personaje agregado al final del archivo');
+      persistir(personajesGOT);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  agregarPersonajeAlFinal();
+}
+
+// b)
+
+async function consigna_2_b() {
+  function agregarDosAlPrincipio(pers1, pers2) {
+    try {
+      const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+      const personajesGOT = JSON.parse(data);
+
+      const ultimoPersonaje = personajesGOT[personajesGOT.length - 1];
+      const ultimoId = ultimoPersonaje.id;
+
+      pers1.id = ultimoId + 1;
+      pers2.id = ultimoId + 2;
+
+      personajesGOT.unshift(nuevoPersonaje3, nuevoPersonaje4);
+
+      console.log('Dos personajes agregados al principio del archivo');
+      persistir(personajesGOT);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const nuevoPersonaje3 = {
+    firstName: 'Juan',
+    lastName: 'Perez',
+    fullName: 'Juan Perez',
+    title: 'Knight',
+    family: 'House Stark',
+    image: 'juan.jpg',
+    imageUrl: 'https://miimagen.com/juan.jpg',
+  };
+
+  const nuevoPersonaje4 = {
+    firstName: 'Lucia',
+    lastName: 'Gomez',
+    fullName: 'Lucia Gomez',
+    title: 'Queen',
+    family: 'House Targaryen',
+    image: 'lucia.jpg',
+    imageUrl: 'https://miimagen.com/lucia.jpg',
+  };
+  agregarDosAlPrincipio(nuevoPersonaje3, nuevoPersonaje4);
+}
+
+// c)
+async function consigna_2_c() {
+  function eliminarPrimerPersonaje() {
+    try {
+      const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+      const personajes = JSON.parse(data);
+
+      const eliminado = personajes.shift();
+
+      console.log('Personaje eliminado:');
+      console.log(eliminado);
+
+      fs.writeFileSync(
+        './listaPersonajes.json',
+        JSON.stringify(personajes, null, 2),
+      );
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  eliminarPrimerPersonaje();
+}
+
+// d)
+
+async function consigna_2_d() {
+  function crearArchivoReducido() {
+    try {
+      const data = fs.readFileSync('./listaPersonajes.json', 'utf-8');
+      const personajes = JSON.parse(data);
+
+      //Crear nuevo array con solo id y nombre
+      const reducido = personajes.map((p) => ({
+        id: p.id,
+        nombre: p.fullName,
+      }));
+
+      // Guardar en nuevo archivo
+      fs.writeFileSync(
+        './personajesReducidos.json',
+        JSON.stringify(reducido, null, 2),
+      );
+
+      console.log('Archivo reducido');
+      console.log(reducido);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  crearArchivoReducido();
+}
+
+// e)
+
+async function consigna_2_e() {
+  function ordenarPersonajesDecre() {
+    try {
+      const data = fs.readFileSync('./personajesReducidos.json', 'utf-8');
+      const personajes = JSON.parse(data);
+
+      personajes.sort((a, b) => {
+        if (a.nombre < b.nombre) return 1;
+        if (a.nombre > b.nombre) return -1;
+        return 0;
+      });
+
+      console.log('Personajes ordenados de forma decreciente:');
+      console.log(personajes);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  ordenarPersonajesDecre();
+}
+
+async function main() {
+  await consigna_1_a();
+  await consigna_1_b();
+  await consigna_1_c();
+  await consigna_1_d();
+  await consigna_2_a();
+  await consigna_2_b();
+  await consigna_2_c();
+  await consigna_2_d();
+  await consigna_2_e();
+}
+
+main();
